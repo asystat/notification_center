@@ -2,7 +2,9 @@
     package="ai.sbreit.notificationcenter">
    <application
         android:label="notification_center"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:name=".ApplicationClass"
+       >
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -42,8 +44,15 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+       <meta-data android:name="com.onesignal.NotificationServiceExtension"
+           android:value="ai.sbreit.notificationcenter.services.NotificationServiceExtension" />
+
     </application>
 
+
+
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
 </manifest>

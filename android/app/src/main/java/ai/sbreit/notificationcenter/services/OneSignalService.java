@@ -6,9 +6,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-import java.util.Timer;
-
-public class OneSignalService extends Service {
+public class OneSignalService extends Service{
     private final IBinder binder = new AppServiceBinder();
     private final String TAG = "rest/service";
 
@@ -50,4 +48,5 @@ public class OneSignalService extends Service {
     public int getCurrentSeconds() {
         return ((int) System.currentTimeMillis());
     }
+
 }

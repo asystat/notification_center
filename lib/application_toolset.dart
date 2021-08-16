@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notification_center/main.dart';
 import 'package:notification_center/ui_components/handable_button.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'dart:async';
 
 //import OneSignal
@@ -81,7 +82,7 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    //initPlatformState();
 
 
     //Native Android Service Binding
@@ -366,6 +367,14 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
     FlutterRingtonePlayer.playNotification();
   }
 
+  void _handleFlushbar() async {
+    Flushbar(
+      title:  "Hey Ninja",
+      message:  "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
+      duration:  Duration(seconds: 3),
+    )..show(context);
+  }
+
   void _handleVibration() async {
     bool? hasVibrator = await Vibration.hasVibrator();
 
@@ -615,6 +624,10 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
                   new TableRow(children: [
                     new HandableButton(
                         "Vibrate", _handleVibration, !_enableConsentButton)
+                  ]),
+                  new TableRow(children: [
+                    new HandableButton(
+                        "Show Flushbar", _handleFlushbar, !_enableConsentButton)
                   ]),
 
 
