@@ -46,15 +46,12 @@ public class MainActivity extends io.flutter.embedding.android.FlutterActivity{
                             connectToService();
                             keepResult = result;
                         } else if (serviceConnected) {
-                            if (call.method.equals("start")) {
-                                appService.startTimer(call.argument("duration"));
+                            if (call.method.equals("stopAlarm")) {
+                                int res = appService.stopAlarm();
+                                result.success(res);
+                            }else if (call.method.equals("startAlarm")) {
+                                appService.startAlarm();
                                 result.success(null);
-                            } else if (call.method.equals("stop")) {
-                                appService.stopTimer();
-                                result.success(null);
-                            } else if (call.method.equals("getCurrentSeconds")) {
-                                int sec = appService.getCurrentSeconds();
-                                result.success(sec);
                             }
                         } else {
                             result.error(null, "App not connected to service", null);

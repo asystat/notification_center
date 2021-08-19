@@ -34,18 +34,15 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
     try {
       await platform.invokeMethod<void>('connect');
       print('Connected to service');
-      Scaffold.of(context).showSnackBar(const SnackBar(
-          content: Text('Connected to app service'),
-          duration: Duration(seconds: 2)));
+      _handleFlushbar(title:"Connection successful", message: "Fluter app is connected to native Android service ;)");
     } on Exception catch (e) {
       print(e.toString());
-      Scaffold.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not connect to app service.')));
+      _handleFlushbar(title:"Connection failed", message: "Couldn'' connect to to native Android service ;)");
       return;
     }
 
     try {
-      int serviceData = await getServiceData() ?? 0;
+      int serviceData = await stopServiceAlarm() ?? 0;
       setState(() {
         _debugLabelString = 'Service returned data: ${serviceData}';
       });
@@ -56,15 +53,27 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
     }
   }
 
-  Future<int?> getServiceData() async {
+  Future<int?> stopServiceAlarm() async {
+
     try {
-      final int? result = await platform.invokeMethod<int>('getCurrentSeconds');
+      final int? result = await platform.invokeMethod<int>('stopAlarm');
+      print("Service call result: ${result}");
       return result;
     } on PlatformException catch (e) {
       print(e.toString());
     }
-
     return 0;
+  }
+
+  Future<void> startServiceAlarm() async {
+
+    try {
+      await platform.invokeMethod<int>('startAlarm');
+
+    } on PlatformException catch (e) {
+      print(e.toString());
+    }
+
   }
 
   @override
@@ -84,10 +93,14 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
     super.initState();
     //initPlatformState();
 
-
     //Native Android Service Binding
     WidgetsBinding.instance?.addObserver(this);
     connectToService();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -100,7 +113,7 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
 
     OneSignal.shared
         .setNotificationOpenedHandler((OSNotificationOpenedResult result) {
-      _handleVibration();
+
       print('NOTIFICATION OPENED HANDLER CALLED WITH: ${result}');
       this.setState(() {
         _debugLabelString =
@@ -110,7 +123,7 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
 
     OneSignal.shared
         .setNotificationWillShowInForegroundHandler((OSNotificationReceivedEvent event) {
-      _handleVibration();
+
       print('FOREGROUND HANDLER CALLED WITH: ${event}');
       /// Display Notification, send null to not display
       event.complete(null);
@@ -367,12 +380,28 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
     FlutterRingtonePlayer.playNotification();
   }
 
-  void _handleFlushbar() async {
+  void _handleFlushbar({String title = "Flushbar Title", String message = "Lorem Ipsum is simply dummy text of the printing and typesetting industry"}) async {
     Flushbar(
-      title:  "Hey Ninja",
-      message:  "Lorem Ipsum is simply dummy text of the printing and typesetting industry",
+      title:  title,
+      message:  message,
       duration:  Duration(seconds: 3),
     )..show(context);
+  }
+
+  void _handleStopServiceAlarm() async {
+
+
+    int serviceData = await stopServiceAlarm() ?? 0;
+
+    _handleFlushbar(title:"Service data received", message: "Service data: ${serviceData}");
+
+    setState(() {
+      _debugLabelString = 'Service returned data: ${serviceData}';
+    });
+  }
+
+  void _handleStartServiceAlarm() async {
+    await startServiceAlarm();
   }
 
   void _handleVibration() async {
@@ -628,6 +657,14 @@ class ApplicationToolset extends State<NotificationCenter> with WidgetsBindingOb
                   new TableRow(children: [
                     new HandableButton(
                         "Show Flushbar", _handleFlushbar, !_enableConsentButton)
+                  ]),
+                  new TableRow(children: [
+                    new HandableButton(
+                        "Start service alarm", _handleStartServiceAlarm, !_enableConsentButton)
+                  ]),
+                  new TableRow(children: [
+                    new HandableButton(
+                        "Stop service alarm", _handleStopServiceAlarm, !_enableConsentButton)
                   ]),
 
 

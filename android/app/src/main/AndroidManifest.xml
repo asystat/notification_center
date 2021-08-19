@@ -46,10 +46,9 @@
             android:value="2" />
 
        <meta-data android:name="com.onesignal.NotificationServiceExtension"
-           android:value="ai.sbreit.notificationcenter.services.NotificationServiceExtension" />
+           android:value="ai.sbreit.notificationcenter.services.OneSignalService" />
 
     </application>
-
 
 
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
