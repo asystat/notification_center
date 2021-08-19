@@ -110,7 +110,7 @@ public class OneSignalService extends Service implements OneSignal.OSRemoteNotif
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @Override
